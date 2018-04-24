@@ -1,0 +1,4 @@
+shv_modbus_uart1_port.c:19:6:init_uart1	16	static
+shv_modbus_uart1_port.c:25:6:reinit_uart1	16	static
+shv_modbus_uart1_port.c:31:6:reload_dma	8	static
+shv_modbus_uart1_port.c:40:6:TIM3_Update_Handler	16	static

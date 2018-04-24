@@ -1,0 +1,8 @@
+shv_mb_rtu.c:24:15:s_read_hr	32	static
+shv_mb_rtu.c:49:15:s_write_hr	32	static
+shv_mb_rtu.c:78:6:s_exception_handler	16	static
+shv_mb_rtu.c:93:17:s_check_crc16	24	static
+shv_mb_rtu.c:110:22:s_modbus_rt_func_03_read_hr	32	static
+shv_mb_rtu.c:156:22:s_modbus_rt_func_06_write_sreg	40	static
+shv_mb_rtu.c:206:22:s_modbus_rt_func_16_write_mregs	40	static
+shv_mb_rtu.c:259:15:modbus_rt_process_request	24	static

@@ -1,0 +1,6 @@
+spi_w5500.c:25:13:s_w5500_init	16	static
+spi_w5500.c:37:13:s_w5500_deselect_chip	8	static
+spi_w5500.c:42:13:s_w5500_select_chip	8	static
+spi_w5500.c:47:16:s_w5500_send_byte	32	static
+spi_w5500.c:54:16:s_w5500_read_byte	8	static
+spi_w5500.c:59:6:w5500_init	32	static

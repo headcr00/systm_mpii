@@ -1,0 +1,5 @@
+archive.c:15:22:archive_get_pack_offset	16	static
+archive.c:23:22:archive_write_data	48	static
+archive.c:65:22:archive_get_data	24	static
+archive.c:82:22:archive_write_settings	24	static
+archive.c:99:22:archive_read_settings	24	static

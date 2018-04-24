@@ -1,0 +1,4 @@
+task_hr_handler.c:14:13:reg_check_time	24	static
+task_hr_handler.c:42:13:reg_check_ip	16	static
+task_hr_handler.c:99:13:reg_check_rtu_addr	8	static
+task_hr_handler.c:111:6:task_hr_handler	16	static

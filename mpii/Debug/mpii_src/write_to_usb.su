@@ -1,0 +1,2 @@
+write_to_usb.c:17:16:write_to_usb	744	static
+write_to_usb.c:65:6:usb_write_archive_task	16	static

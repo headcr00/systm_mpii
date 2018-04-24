@@ -1,0 +1,6 @@
+usbh_diskio.c:68:9:disk_initialize	16	static
+usbh_diskio.c:78:9:disk_status	24	static
+usbh_diskio.c:102:9:disk_read	608	static
+usbh_diskio.c:166:9:disk_write	608	static
+usbh_diskio.c:233:9:disk_ioctl	72	static
+usbh_diskio.c:297:7:get_fattime	4	static

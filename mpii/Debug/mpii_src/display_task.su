@@ -1,0 +1,2 @@
+display_task.c:23:13:s_display_data	24	static
+display_task.c:99:6:task_oled	8	static

@@ -1,0 +1,2 @@
+task_oled.c:24:13:s_display_data	56	static
+task_oled.c:117:6:task_oled	40	static

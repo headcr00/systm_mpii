@@ -1,0 +1,7 @@
+shv_mb_tcp.c:24:22:s_read_hr	32	static
+shv_mb_tcp.c:49:22:s_write_hr	32	static
+shv_mb_tcp.c:78:13:s_exception_handler	16	static
+shv_mb_tcp.c:93:22:s_modbus_tcp_func_03_read_hr	32	static
+shv_mb_tcp.c:148:22:s_modbus_tcp_func_06_write_sreg	32	static
+shv_mb_tcp.c:213:22:s_modbus_tcp_func_16_write_mregs	32	static
+shv_mb_tcp.c:280:15:modbus_tcp_process_request	24	static

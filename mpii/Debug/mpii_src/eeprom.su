@@ -1,0 +1,10 @@
+eeprom.c:24:13:s_eeprom_select	16	static
+eeprom.c:42:16:s_get_selected_eeprom	24	static
+eeprom.c:59:13:s_eeprom_timeout_handler	8	static
+eeprom.c:76:13:s_eeprom_clear_timeout_error	8	static
+eeprom.c:97:16:s_eeprom_send_byte	32	static
+eeprom.c:113:16:s_eeprom_read_byte	8	static
+eeprom.c:125:6:eeprom_write_page	24	static
+eeprom.c:152:6:eeprom_read_page	40	static
+eeprom.c:175:9:eeprom_read_status_register	24	static
+eeprom.c:190:9:eeprom_write_status_register	24	static

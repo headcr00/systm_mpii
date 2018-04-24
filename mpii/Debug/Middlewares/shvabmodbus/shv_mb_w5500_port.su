@@ -1,0 +1,4 @@
+shv_mb_w5500_port.c:31:9:eth_send_tcp_data	16	static
+shv_mb_w5500_port.c:36:6:modbus_init_w5500	48	static
+shv_mb_w5500_port.c:51:6:modbus_reinit_w5500	16	static
+shv_mb_w5500_port.c:65:6:vEthTask	32	static
