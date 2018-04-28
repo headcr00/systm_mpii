@@ -15,6 +15,8 @@
 
 extern TIM_HandleTypeDef htim3;
 extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart2;
+extern UART_HandleTypeDef huart3;
 
 
 enum {
@@ -110,8 +112,8 @@ void modbus_init_registers();
 mb_error_code modbus_rt_process_request(modbus_t * mb, char * input_buffer, char ** output_buffer, uint16_t * len);
 mb_error_code modbus_tcp_process_request(modbus_t * mb, char * input_buffer, char ** output_buffer, uint16_t * len);
 //PORTS
-void init_uart1(modbus_t * mb_pointer);
-void reinit_uart1(modbus_t * mb_pointer);
+void init_uart(modbus_t * mb_pointer);
+void reinit_uart(modbus_t * mb_pointer);
 void modbus_init_w5500(modbus_t * mb);
 void modbus_reinit_w5500(modbus_t * mb);
 //MISC

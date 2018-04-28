@@ -104,7 +104,7 @@ static void reg_check_rtu_addr()
 	{
 		prev_addr = hr_bn_modbus_addr;
 		mb.id = hr_bn_modbus_addr;
-		reinit_uart1(&mb);
+		reinit_uart(&mb);
 	}
 }
 

@@ -60,6 +60,7 @@
 #include "write_to_usb.h"
 #include "adc_bp_struct.h"
 #include "archive.h"
+#include "spi_comm_madc.h"
 #include "task_hr_handler.h"
 /* USER CODE END Includes */
 
@@ -79,6 +80,8 @@ UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 DMA_HandleTypeDef hdma_usart1_rx;
+DMA_HandleTypeDef hdma_usart2_rx;
+DMA_HandleTypeDef hdma_usart3_rx;
 
 osThreadId defaultTaskHandle;
 
@@ -117,7 +120,7 @@ modbus_t mb;
  */
 int main(void)
 {
-	ArchiveStruct arch;
+
 	/* USER CODE BEGIN 1 */
 
 	/* USER CODE END 1 */
@@ -208,8 +211,8 @@ int main(void)
 	mb.dns_ip_addr.ip3 = hr_bn_ipdns_l >> 8;
 	mb.dns_ip_addr.ip4 = hr_bn_ipdns_l & 0xFF;
 
-	//modbus_init_w5500(&mb);// Creates eth task
-	init_uart1(&mb);
+	modbus_init_w5500(&mb);// Creates eth task
+	init_uart(&mb);
 	/* USER CODE END RTOS_THREADS */
 
 	/* USER CODE BEGIN RTOS_QUEUES */
@@ -246,53 +249,53 @@ void SystemClock_Config(void)
 {
 
 
-	  RCC_OscInitTypeDef RCC_OscInitStruct;
-	  RCC_ClkInitTypeDef RCC_ClkInitStruct;
-	  RCC_PeriphCLKInitTypeDef PeriphClkInit;
+	RCC_OscInitTypeDef RCC_OscInitStruct;
+	RCC_ClkInitTypeDef RCC_ClkInitStruct;
+	RCC_PeriphCLKInitTypeDef PeriphClkInit;
 
-	    /**Initializes the CPU, AHB and APB busses clocks
-	    */
-	  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE|RCC_OSCILLATORTYPE_LSE;
-	  RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
-	  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV5;
-	  RCC_OscInitStruct.LSEState = RCC_LSE_ON;
-	  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-	  RCC_OscInitStruct.Prediv1Source = RCC_PREDIV1_SOURCE_PLL2;
-	  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-	  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-	  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
-	  RCC_OscInitStruct.PLL2.PLL2State = RCC_PLL2_ON;
-	  RCC_OscInitStruct.PLL2.PLL2MUL = RCC_PLL2_MUL8;
-	  RCC_OscInitStruct.PLL2.HSEPrediv2Value = RCC_HSE_PREDIV2_DIV5;
-	  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-	  {
-	    _Error_Handler(__FILE__, __LINE__);
-	  }
+	/**Initializes the CPU, AHB and APB busses clocks
+	 */
+	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE|RCC_OSCILLATORTYPE_LSE;
+	RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
+	RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV5;
+	RCC_OscInitStruct.LSEState = RCC_LSE_ON;
+	RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+	RCC_OscInitStruct.Prediv1Source = RCC_PREDIV1_SOURCE_PLL2;
+	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+	RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
+	RCC_OscInitStruct.PLL2.PLL2State = RCC_PLL2_ON;
+	RCC_OscInitStruct.PLL2.PLL2MUL = RCC_PLL2_MUL8;
+	RCC_OscInitStruct.PLL2.HSEPrediv2Value = RCC_HSE_PREDIV2_DIV5;
+	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+	{
+		_Error_Handler(__FILE__, __LINE__);
+	}
 
-	  /**Initializes the CPU, AHB and APB busses clocks
-	    */
-	  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-	                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-	  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-	  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-	  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
-	  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+	/**Initializes the CPU, AHB and APB busses clocks
+	 */
+	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+			|RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-	  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
-	  {
-	    _Error_Handler(__FILE__, __LINE__);
-	  }
-
-
+	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+	{
+		_Error_Handler(__FILE__, __LINE__);
+	}
 
 
-	  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_USB;
-	  PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
-	  PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_PLL_DIV3;
-	  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
-	  {
-	    _Error_Handler(__FILE__, __LINE__);
-	  }
+
+
+	PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_RTC|RCC_PERIPHCLK_USB;
+	PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
+	PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_PLL_DIV3;
+	if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+	{
+		_Error_Handler(__FILE__, __LINE__);
+	}
 	/**Configure the Systick interrupt time
 	 */
 	HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
@@ -321,7 +324,7 @@ static void MX_RTC_Init(void)
 	//__HAL_RCC_BKP_CLK_ENABLE();
 	//__HAL_RCC_PWR_CLK_ENABLE();
 
-//	__HAL_RCC_RTC_CONFIG(RCC_RTCCLKSOURCE_LSE);
+	//	__HAL_RCC_RTC_CONFIG(RCC_RTCCLKSOURCE_LSE);
 	hrtc.Instance = RTC;
 	//hrtc.Init.HourFormat = RTC_HOURFORMAT_24;
 	//hrtc.Init.AsynchPrediv = 0x7F;
@@ -339,21 +342,21 @@ static void MX_RTC_Init(void)
 
 		HAL_RTCEx_BKUPWrite(&hrtc,RTC_BKP_DR1,0x32F2);
 	}
-	 else
-	  {
+	else
+	{
 
-	       uint32_t dateMem = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR2);
+		uint32_t dateMem = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR2);
 
-	       memcpy(&DateToUpdate,&dateMem,sizeof(uint32_t));
+		memcpy(&DateToUpdate,&dateMem,sizeof(uint32_t));
 
-	       if (HAL_RTC_SetDate(&hrtc, &DateToUpdate, RTC_FORMAT_BCD) != HAL_OK)
-	       {
-	         _Error_Handler(__FILE__, __LINE__);
-	       }
+		if (HAL_RTC_SetDate(&hrtc, &DateToUpdate, RTC_FORMAT_BCD) != HAL_OK)
+		{
+			_Error_Handler(__FILE__, __LINE__);
+		}
 
-	       HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+		HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 
-	  }
+	}
 
 }
 
@@ -398,6 +401,7 @@ static void MX_SPI2_Init(void)
 	hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
 	hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
 	hspi2.Init.CRCPolynomial = 10;
+	//hspi2.hdmarx->XferCpltCallback = spi_comm_dma_irq_handler;
 	if (HAL_SPI_Init(&hspi2) != HAL_OK)
 	{
 		_Error_Handler(__FILE__, __LINE__);
@@ -422,6 +426,7 @@ static void MX_SPI3_Init(void)
 	hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
 	hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
 	hspi3.Init.CRCPolynomial = 10;
+
 	if (HAL_SPI_Init(&hspi3) != HAL_OK)
 	{
 		_Error_Handler(__FILE__, __LINE__);
@@ -433,8 +438,6 @@ static void MX_SPI3_Init(void)
 static void MX_TIM3_Init(void)
 {
 
-	TIM_ClockConfigTypeDef sClockSourceConfig;
-	TIM_MasterConfigTypeDef sMasterConfig;
 
 	htim3.Instance = TIM3;
 	htim3.Init.Prescaler = SystemCoreClock/1000;
@@ -447,18 +450,18 @@ static void MX_TIM3_Init(void)
 		_Error_Handler(__FILE__, __LINE__);
 	}
 	HAL_NVIC_EnableIRQ(TIM3_IRQn);
-//	sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-//	if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
-//	{
-//		_Error_Handler(__FILE__, __LINE__);
-//	}
-//
-//	sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-//	sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-//	if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
-//	{
-//		_Error_Handler(__FILE__, __LINE__);
-//	}
+	//	sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+	//	if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
+	//	{
+	//		_Error_Handler(__FILE__, __LINE__);
+	//	}
+	//
+	//	sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+	//	sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+	//	if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+	//	{
+	//		_Error_Handler(__FILE__, __LINE__);
+	//	}
 
 }
 
@@ -486,17 +489,18 @@ static void MX_USART2_UART_Init(void)
 {
 
 	huart2.Instance = USART2;
-	huart2.Init.BaudRate = 115200;
+	huart2.Init.BaudRate = 9600;
 	huart2.Init.WordLength = UART_WORDLENGTH_8B;
 	huart2.Init.StopBits = UART_STOPBITS_1;
 	huart2.Init.Parity = UART_PARITY_NONE;
 	huart2.Init.Mode = UART_MODE_TX_RX;
-	huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	huart2.Init.HwFlowCtl = UART_HWCONTROL_RTS;
 	huart2.Init.OverSampling = UART_OVERSAMPLING_16;
 	if (HAL_UART_Init(&huart2) != HAL_OK)
 	{
 		_Error_Handler(__FILE__, __LINE__);
 	}
+
 
 }
 
@@ -510,7 +514,7 @@ static void MX_USART3_UART_Init(void)
 	huart3.Init.StopBits = UART_STOPBITS_1;
 	huart3.Init.Parity = UART_PARITY_NONE;
 	huart3.Init.Mode = UART_MODE_TX_RX;
-	huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+	huart3.Init.HwFlowCtl = UART_HWCONTROL_RTS;
 	huart3.Init.OverSampling = UART_OVERSAMPLING_16;
 	if (HAL_UART_Init(&huart3) != HAL_OK)
 	{
@@ -535,11 +539,14 @@ static void MX_DMA_Init(void)
 	HAL_NVIC_SetPriority(DMA1_Channel3_IRQn, 5, 0);
 	HAL_NVIC_EnableIRQ(DMA1_Channel3_IRQn);
 	/* DMA1_Channel4_IRQn interrupt configuration */
+
 	HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 5, 0);
 	HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
 	/* DMA1_Channel5_IRQn interrupt configuration */
 	HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 5, 0);
 	HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
+
+
 
 }
 
@@ -606,9 +613,11 @@ static void MX_GPIO_Init(void)
 
 	/*Configure GPIO pin : ADC_NSS_Pin */
 	GPIO_InitStruct.Pin = ADC_NSS_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(ADC_NSS_GPIO_Port, &GPIO_InitStruct);
+	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
 	/*Configure GPIO pins : PMODE_0_Pin PMODE_1_Pin PMODE_2_Pin WDI_Pin */
 	GPIO_InitStruct.Pin = PMODE_0_Pin|PMODE_1_Pin|PMODE_2_Pin|WDI_Pin;
@@ -637,7 +646,21 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	if (GPIO_Pin == GPIO_PIN_12)
+	{
+		nss_interrupt_handler();
+	}
+}
 
+void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+	if (hspi->Instance == SPI2)
+	{
+		spi_comm_dma_irq_handler();
+	}
+}
 /* USER CODE END 4 */
 
 /* StartDefaultTask function */
@@ -700,6 +723,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		TIM3_Update_Handler();
 	/* USER CODE END Callback 1 */
 }
+
+
 
 /**
  * @brief  This function is executed in case of error occurrence.

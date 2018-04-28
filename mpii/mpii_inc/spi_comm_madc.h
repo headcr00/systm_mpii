@@ -12,5 +12,6 @@
 
 extern SPI_HandleTypeDef hspi2;
 
-void init_spi_comm_task();
+void nss_interrupt_handler();
+void spi_comm_dma_irq_handler();
 #endif /* SPI_COMM_MADC_H_ */

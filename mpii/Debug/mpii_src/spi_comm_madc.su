@@ -1,2 +1,3 @@
-spi_comm_madc.c:11:6:init_spi_comm_task	4	static
+spi_comm_madc.c:11:6:init_spi_comm_task	8	static
 spi_comm_madc.c:16:6:nss_interrupt_handler	8	static
+spi_comm_madc.c:22:6:spi_comm_dma_irq_handler	8	static
